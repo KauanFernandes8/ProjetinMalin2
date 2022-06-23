@@ -5,9 +5,6 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 public class Estadio
 {
-    int contarDigitos = 0;
-
-    int Idestadio;
     int numero;
 
     public int getTelefone() {
@@ -21,22 +18,6 @@ public class Estadio
     int telefone;
     int cep ;
     String nome, complemento;
-
-    public int getContarDigitos() {
-        return contarDigitos;
-    }
-
-    public void setContarDigitos(int contarDigitos) {
-        this.contarDigitos = contarDigitos;
-    }
-
-    public int getIdestadio() {
-        return Idestadio;
-    }
-
-    public void setIdestadio(int idestadio) {
-        Idestadio = idestadio;
-    }
 
     public int getNumero() {
         return numero;
@@ -85,4 +66,18 @@ public class Estadio
 
     public Estadio()
     {}
+
+    public String toString()
+    {
+        return "\nC.E.P.: "+
+                this.cep+
+                "\nComplemento: "+
+                this.complemento+
+                "\nNumero.....: "+
+                this.numero+
+                "\nTelefone.....: "+
+                this.telefone+
+                "\nNome.....: "+
+                this.nome;
+    }
 } 

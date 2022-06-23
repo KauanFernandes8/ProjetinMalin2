@@ -24,8 +24,8 @@ async function atualize (estadio)
 
     try
     {
-        const sql   = 'UPDATE estadios SET numero=?,telefone=?,nome=?,complemento=? WHERE cep=?';
-        const dados = [estadio.nome,estadio.preco,estadio.cep];
+        const sql   = `UPDATE estadios SET nome=$1,numero=$2,telefone=$3, complemento=$4 WHERE id=$cep`;
+        const dados = [estadio.nome, estadio.numero, estadio.telefone, estadio.complemento, estadio.cep,];
         await conexao.query (sql,dados);
         return true;
     }
@@ -42,9 +42,8 @@ async function remova (cep)
 
     try
     {
-        const sql   = 'DELETE FROM estadios WHERE cep=?';
-        const dados = [cep];
-        await conexao.query (sql,dados);
+        const sql   = `DELETE FROM estadios WHERE cep=${cep}`;
+        await conexao.query (sql);
         return true;
     }
     catch (excecao)
@@ -60,10 +59,9 @@ async function recupereUm (cep)
 
     try
     {
-        const  sql     = 'SELECT * FROM estadios WHERE cep=?';
-        const  dados   = [cep];
-        const [linhas] = await conexao.execute(sql,dados);
-        return linhas;
+        const  sql     = `SELECT * FROM estadios WHERE cep=${cep}`;
+        const linhas = (await conexao.query(sql)).rows;
+        return linhas[0];
     }
     catch (excecao)
     {

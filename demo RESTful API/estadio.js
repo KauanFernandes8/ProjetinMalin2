@@ -50,7 +50,7 @@ class Estadio
  
     set numero (numero)
     {
-        if (numero===undefined || typeof numero !== 'number' || numero<=0)
+        if (numero===undefined || typeof numero !== 'number' || isNaN(numero) || numero<=0)
             throw ('numero inválido');
 
         this.#numero = numero;
@@ -66,7 +66,7 @@ class Estadio
 
     set nome (nome)
     {
-        if (nome===undefined || typeof nome !== 'string' || isNaN(nome) || nome=="")
+        if (nome===undefined || typeof nome !== 'string' || nome=="")
             throw ('Nome inválido');
 
         this.#nome = nome;
@@ -74,7 +74,7 @@ class Estadio
 
     set complemento (complemento)
     {
-        if (complemento===undefined || typeof complemento !== 'string' || isNaN(complemento) || complemento=="")
+        if (complemento===undefined || typeof complemento !== 'string' || complemento=="")
             throw ('complemento inválido');
 
         this.#complemento = complemento;
@@ -83,6 +83,7 @@ class Estadio
 
 function novo (cep,numero,telefone, nome, complemento)
 {
+    console.log(cep, numero, telefone, nome, complemento)
     return new Estadio (cep,numero,telefone, nome, complemento);
 }
 

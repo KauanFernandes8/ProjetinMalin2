@@ -22,7 +22,6 @@ async function ativacaoDoServidor ()
         console.log ('Não foi possível estabelecer conexão com o BD!');
         process.exit(1);
     }
-    console.log("erro")
     if (ret===false)
     {
         console.log ('Não foi possível estruturar o BD!');

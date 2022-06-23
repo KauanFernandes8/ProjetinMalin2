@@ -1,19 +1,19 @@
 class Comunicado
 {
-    #cep
+    #sigla
     #mensagem
     #descricao
 
-    constructor (cep, mensagem, descricao)
+    constructor (sigla, mensagem, descricao)
     {
-        this.cep=cep;
+        this.sigla=sigla;
         this.mensagem=mensagem;
         this.descricao=descricao;
     }
 
-    get cep ()
+    get sigla ()
     {
-        return this.#cep
+        return this.#sigla
     }
 
     get mensagem ()
@@ -26,12 +26,12 @@ class Comunicado
         return this.#descricao
     }
 
-    set cep (cep)
+    set sigla (sigla)
     {
-        if (cep===undefined || typeof cep !== 'number' || cep.length!== 8)
-            throw ('Cep inválido');
+        if (sigla===undefined || typeof sigla !== 'string' || sigla==="")
+            throw ('Sigla inválida');
 
-        this.#cep = cep;
+        this.#sigla = sigla;
     }
 
     set mensagem (mensagem)
@@ -52,13 +52,13 @@ class Comunicado
 
     get object ()
     {
-        return {cep:this.#cep,mensagem:this.#mensagem,descricao:this.#descricao};
+        return {sigla:this.#sigla,mensagem:this.#mensagem,descricao:this.#descricao};
     }
 }
 
-function novo (cep,mensagem,descricao)
+function novo (sigla,mensagem,descricao)
 {
-    return new Comunicado (cep,mensagem,descricao);
+    return new Comunicado (sigla,mensagem,descricao);
 }
 
 module.exports = {novo}

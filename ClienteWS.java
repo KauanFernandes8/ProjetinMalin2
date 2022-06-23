@@ -9,11 +9,14 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.MappingJsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 public class ClienteWS
 {
@@ -92,10 +95,138 @@ public class ClienteWS
         {
             e.printStackTrace();
         }
+        return objetoRetorno;
+    }
+
+    public static Object putObjeto (Class tipoObjetoRetorno,
+                                    Object objetoAtualizado,
+                                    String urlWebService,
+                                    String... parametro)
+    {
+        Object objetoRetorno = null;
+
+        try
+        {
+            for(String parametros : parametro)
+                urlWebService = urlWebService + "/" + parametros.replaceAll(" ", "%20");
+            String requestJson = toJson(objetoAtualizado);
+            URL url = new URL(urlWebService);
+            HttpURLConnection connection =
+                    (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            connection.setConnectTimeout(15000);
+            //connection.setRequestProperty("login", "seulogin");
+            //connection.setRequestProperty("senha", "suasenha");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Content-Length", Integer.toString(requestJson.length()));
+
+            DataOutputStream stream =
+                    new DataOutputStream (connection.getOutputStream());
+            stream.write (requestJson.getBytes("UTF-8"));
+            stream.flush ();
+            stream.close ();
+            connection.connect ();
+
+            String responseJson = inputStreamToString (connection.getInputStream());
+            connection.disconnect();
+            objetoRetorno = fromJson (responseJson, tipoObjetoRetorno);
+        }
+
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
         return objetoRetorno;
     }
 
+    public static ArrayList<Object> getObjetos (Class tipoObjetoRetorno,
+                                                String urlWebService,
+                                                String... parametros)
+    {
+        ArrayList<Object> objetos = null;
+
+        try
+        {
+            for (String parametro : parametros)
+                urlWebService = urlWebService + "/" + parametro.replaceAll(" ", "%20");
+
+            URL url = new URL (urlWebService);
+            HttpURLConnection connection =
+                    (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(15000);
+            connection.connect();
+
+            String responseJson = inputStreamToString(connection.getInputStream());
+
+            connection.disconnect();
+
+            objetos = new ArrayList<>();
+
+            JSONArray jsonarray = new JSONArray(responseJson);
+
+            JsonFactory f = new MappingJsonFactory();
+
+            for (int i = 0; i < jsonarray.length(); i++) {
+                JSONObject objetoJson = jsonarray.getJSONObject(i);
+
+                JsonParser jp = f.createJsonParser(objetoJson.toString());
+
+                Object obj = jp.readValueAs(tipoObjetoRetorno);
+
+                objetos.add(obj);
+            }
+
+            return  objetos;
+        }
+        catch (Exception erro)
+        {
+            //erro.printStackTrace();
+            System.err.println("Dados incorretos!");
+        }
+
+        return objetos;
+    }
+
+    public static Object deleteObjeto (Class tipoObjetoRetorno,
+                                    String urlWebService,
+                                    String... parametro)
+    {
+        Object objetoRetorno = null;
+
+        try
+        {
+            for(String parametros : parametro)
+                urlWebService = urlWebService + "/" + parametros.replaceAll(" ", "%20");
+
+            URL url = new URL(urlWebService);
+            HttpURLConnection connection =
+                    (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            connection.setConnectTimeout(15000);
+            //connection.setRequestProperty("login", "seulogin");
+            //connection.setRequestProperty("senha", "suasenha");
+            connection.connect ();
+
+            String responseJson = inputStreamToString (connection.getInputStream());
+            connection.disconnect();
+            return fromJson (responseJson, tipoObjetoRetorno);
+        }
+
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return objetoRetorno;
+    }
 
     public static String inputStreamToString (InputStream is) throws IOException
     {

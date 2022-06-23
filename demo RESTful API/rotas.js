@@ -1,17 +1,17 @@
-const Estadios    = require ('./estadios.js');
+const Estadios   = require ('./estadios.js');
 const Estadio    = require ('./estadio.js');
 const Comunicado = require ('./comunicado.js');
-
 
 // para a rota de CREATE
 async function inclusao (req, res)
 {
-    if (Object.values(req.body).length!=8 || !req.body.cep || !req.body.numero || !req.body.telefone || !req.body.nome || !req.body.complemento)
+    console.log(req.body)
+    if (Object.values(req.body).length!=5 || !req.body.cep || !req.body.numero || !req.body.telefone || !req.body.nome || !req.body.complemento)
     {
         const erro = Comunicado.novo('DdI','Dados inesperados','Não foram fornecidos exatamente as 3 informações esperadas de um cep (cep, nome e preço)').object;
         return res.status(422).json(erro);
     }
-    
+
     let estadio;
     try
     {
@@ -20,7 +20,6 @@ async function inclusao (req, res)
 
     catch (excecao)
     {
-        console.log(excecao)
         const erro = Comunicado.novo('TDE','Dados de tipos errados','cep deve ser um numero natural positivo, nome deve ser um texto não vazio e preço deve ser um número real positivo').object;
         return res.status(422).json(erro);
     }
@@ -67,7 +66,7 @@ async function atualizacao (req, res)
     }
 
     const cep = req.params.cep;
-    
+
     if (cep!=estadio.cep)
     {
         const erro = Comunicado.novo('TMC','Mudança de código','Tentativa de mudar o código do estádio').object;
